@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sapta Sankalp — 7 Appeals Tracker</title>
+<meta name="description" content="Tracking publicly available market and macro indicators related to the seven appeals made by PM Modi on 10 May 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+<style>
+  :root {
+    --bg: #FBF6EE;
+    --bg-2: #F4ECDD;
+    --surface: #FFFFFF;
+    --ink: #0F1419;
+    --ink-2: #3A4250;
+    --muted: #6B7280;
+    --line: rgba(15, 20, 25, 0.08);
+    --line-strong: rgba(15, 20, 25, 0.14);
+    --accent: #C75D2C;
+    --accent-2: #1A4D5C;
+    --accent-soft: rgba(199, 93, 44, 0.08);
+    --chip-bg: #FFFFFF;
+    --shadow-sm: 0 1px 2px rgba(15, 20, 25, 0.04);
+    --shadow-md: 0 4px 16px rgba(15, 20, 25, 0.06);
+    --up: #2E7D5B;
+    --down: #B33B3B;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(199, 93, 44, 0.02) 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: 0;
+  }
+
+  /* ---- Header ---- */
+  .header {
+    padding: 32px 0 28px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .eyebrow .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 8px;
+    vertical-align: 1px;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  h1.title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(34px, 6vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 14px;
+    font-variation-settings: "opsz" 144;
+  }
+
+  h1.title em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--ink-2);
+    max-width: 640px;
+    line-height: 1.55;
+  }
+
+  .subtitle a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(199,93,44,0.3); }
+  .subtitle a:hover { border-bottom-color: var(--accent); }
+
+  .meta-row {
+    display: flex;
+    gap: 32px;
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px dashed var(--line);
+    flex-wrap: wrap;
+  }
+
+  .meta-item { display: flex; flex-direction: column; gap: 3px; }
+
+  .meta-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .meta-value {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* ---- Filter chips ---- */
+  .filter-section { margin-bottom: 22px; }
+
+  .filter-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .chip {
+    background: var(--chip-bg);
+    border: 1px solid var(--line-strong);
+    color: var(--ink-2);
+    padding: 9px 14px;
+    border-radius: 999px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chip:hover { border-color: var(--ink); color: var(--ink); }
+  .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip .num { font-family: 'JetBrains Mono', monospace; font-size: 10px; opacity: 0.6; }
+
+  /* ---- Chart card ---- */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px 24px 18px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+  }
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .chart-title-block h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+
+  .chart-title-block .chart-sub { font-size: 13px; color: var(--muted); }
+
+  .chart-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .range-toggle {
+    display: inline-flex;
+    background: var(--bg-2);
+    border-radius: 8px;
+    padding: 3px;
+  }
+
+  .range-toggle button {
+    background: transparent;
+    border: none;
+    color: var(--ink-2);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .range-toggle button:hover { color: var(--ink); }
+  .range-toggle button.active { background: var(--ink); color: #fff; }
+
+  .export-btn {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .export-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .export-btn svg { width: 14px; height: 14px; }
+
+  .reset-zoom-btn {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--muted);
+    padding: 7px 11px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: none;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .reset-zoom-btn.visible { display: inline-flex; }
+  .reset-zoom-btn:hover { color: var(--ink); border-color: var(--ink); }
+
+  .chart-wrap { position: relative; height: 460px; width: 100%; }
+
+  .zoom-hint {
+    position: absolute;
+    bottom: 6px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    opacity: 0.7;
+    pointer-events: none;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 640px) {
+    .zoom-hint { display: none; }
+  }
+
+  /* ---- Loading state ---- */
+  .loading {
+    height: 460px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ---- Legend ---- */
+  .legend {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 6px 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 9px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+    user-select: none;
+  }
+
+  .legend-item:hover { background: var(--bg-2); }
+  .legend-item.hidden { opacity: 0.35; }
+  .legend-item.hidden .legend-swatch { background: transparent !important; border: 1.5px dashed currentColor; }
+
+  .legend-swatch {
+    width: 14px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .legend-name {
+    font-size: 13px;
+    color: var(--ink-2);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .legend-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .legend-value.up { color: var(--up); }
+  .legend-value.down { color: var(--down); }
+
+  /* ---- Appeal callout ---- */
+  .appeal-callout {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 18px;
+    display: none;
+  }
+
+  .appeal-callout.visible { display: block; }
+
+  .appeal-callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+
+  .appeal-callout .text {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .appeal-callout .note {
+    font-size: 12.5px;
+    color: var(--ink-2);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* ---- Methodology ---- */
+  .methodology {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 24px;
+  }
+
+  .methodology summary {
+    cursor: pointer;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .methodology summary::-webkit-details-marker { display: none; }
+  .methodology summary::after { content: '+'; font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--accent); }
+  .methodology[open] summary::after { content: '−'; }
+
+  /* ---- News & Events ---- */
+  .news-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .news-card .news-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .news-card .news-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .news-card .news-header .news-sub {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 0;
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 18px;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .timeline-item:first-child { border-top: none; padding-top: 4px; }
+
+  .tl-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    padding-top: 2px;
+    white-space: nowrap;
+  }
+
+  .tl-date .tl-year {
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .tl-content {
+    min-width: 0;
+  }
+
+  .tl-headline {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .tl-headline a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s ease;
+  }
+
+  .tl-headline a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  .tl-headline a::after {
+    content: ' ↗';
+    font-family: 'DM Sans', sans-serif;
+    color: var(--muted);
+    font-size: 12px;
+    opacity: 0.5;
+  }
+
+  .tl-summary {
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+
+  .tl-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .tl-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .tl-tag {
+    background: var(--bg-2);
+    color: var(--ink-2);
+    font-size: 10.5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+  }
+
+  .news-empty {
+    text-align: center;
+    padding: 28px 16px;
+    color: var(--muted);
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  .methodology-body {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--line);
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--ink-2);
+  }
+
+  .methodology-body h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 16px;
+    margin-bottom: 6px;
+  }
+  .methodology-body h3:first-child { margin-top: 0; }
+
+  .methodology-body p { margin-bottom: 10px; }
+
+  /* ---- Footer ---- */
+  .footer {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .footer .sources {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .footer .src-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    background: var(--bg-2);
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ---- Error box ---- */
+  .err-box {
+    display: none;
+    background: #FFF3F3;
+    border: 1px solid #E5B4B4;
+    color: #7A2828;
+    padding: 16px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  /* ---- Mobile ---- */
+  @media (max-width: 640px) {
+    .container { padding: 16px 14px 60px; }
+    .header { padding: 20px 0 22px; margin-bottom: 22px; }
+    .meta-row { gap: 18px; }
+    .chart-card { padding: 18px 14px 14px; border-radius: 12px; }
+    .chart-wrap { height: 360px; }
+    .legend { grid-template-columns: 1fr; gap: 2px; }
+    .chips { gap: 6px; }
+    .chip { padding: 7px 11px; font-size: 12px; }
+    .methodology { padding: 18px 16px; }
+    .chart-header { flex-direction: column; align-items: stretch; }
+    .chart-controls { justify-content: space-between; }
+    .news-card { padding: 18px 16px; }
+    .timeline-item { grid-template-columns: 1fr; gap: 4px; padding: 12px 0; }
+    .tl-date { padding-top: 0; }
+    .tl-headline { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="header">
+    <div class="eyebrow"><span class="dot"></span>Tracking since 10 May 2026</div>
+    <h1 class="title">Sapta Sankalp<br><em>Seven Appeals,</em> one year.</h1>
+    <p class="subtitle">
+      On 10 May 2026, in Hyderabad, the Prime Minister made seven appeals to citizens
+      under the theme &ldquo;Nation First, Duty Above Comfort.&rdquo; This page tracks publicly
+      available closing-price data for market and macro indicators related to each appeal,
+      rebased to 100 on the speech date for comparability.
+    </p>
+    <div class="meta-row">
+      <div class="meta-item">
+        <div class="meta-label">Speech date</div>
+        <div class="meta-value">10 May 2026</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Days elapsed</div>
+        <div class="meta-value" id="daysElapsed">—</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Instruments tracked</div>
+        <div class="meta-value" id="instrumentCount">—</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Last updated</div>
+        <div class="meta-value" id="lastUpdated">—</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="err-box" id="errBox"></div>
+
+  <section class="filter-section">
+    <div class="filter-label">Filter by appeal</div>
+    <div class="chips" id="filterChips"></div>
+  </section>
+
+  <div class="appeal-callout" id="appealCallout">
+    <div class="label" id="appealLabel"></div>
+    <div class="text" id="appealText"></div>
+    <div class="note" id="appealNote"></div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title-block">
+        <h2 id="chartTitle">All tracked instruments</h2>
+        <div class="chart-sub">Closing prices rebased to 100 on 10 May 2026 · Click legend items to toggle</div>
+      </div>
+      <div class="chart-controls">
+        <div class="range-toggle" id="rangeToggle">
+          <button data-range="1M">1M</button>
+          <button data-range="3M">3M</button>
+          <button data-range="6M">6M</button>
+          <button data-range="ALL" class="active">ALL</button>
+        </div>
+        <button class="reset-zoom-btn" id="resetZoomBtn" title="Reset zoom">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+            <polyline points="3 3 3 9 9 9"></polyline>
+          </svg>
+          RESET
+        </button>
+        <button class="export-btn" id="exportBtn" title="Download chart as PNG">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          PNG
+        </button>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="loading" id="chartLoading">Loading data…</div>
+      <canvas id="mainChart" style="display:none;"></canvas>
+      <div class="zoom-hint" id="zoomHint">Drag horizontally to zoom · Double-click to reset</div>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <section class="news-card" id="newsCard">
+    <div class="news-header">
+      <h2 id="newsTitle">News &amp; Events</h2>
+      <div class="news-sub">Curated, filters with the chart selection</div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <details class="methodology">
+    <summary>Methodology &amp; sources</summary>
+    <div class="methodology-body">
+      <h3>What this site is</h3>
+      <p>An observational tracker of publicly available price series related to import-heavy
+      categories mentioned in the seven appeals. The site presents data and does not interpret
+      whether the appeals have "worked." Readers are encouraged to form their own views.</p>
+
+      <h3>How instruments were chosen</h3>
+      <p>For each appeal, the most direct listed proxy was selected: sector indices where one
+      exists (e.g. Nifty FMCG for Swadeshi consumption), individual listed companies where a
+      sector index does not exist (e.g. fertilizer, cooking oil), and commodity benchmarks for
+      raw imports (Brent crude, gold). Where two or more instruments are reasonable, both are
+      shown — primary instruments as solid lines, alternates as dashed.</p>
+
+      <h3>Rebasing</h3>
+      <p>Every series is rebased to 100 on 10 May 2026 (the speech date). This makes
+      instruments of very different price scales directly comparable on a single axis. Tooltips
+      show both the rebased index value and the raw closing price.</p>
+
+      <h3>Data sources</h3>
+      <p>Market data (equities, indices, commodities, currencies): Yahoo Finance, fetched daily.
+      India CPI: FRED (Federal Reserve Bank of St. Louis), series <code>INDCPIALLMINMEI</code>,
+      updated monthly. Retail fuel prices (petrol, diesel, domestic LPG): public sources, carried
+      forward when no revision is announced.</p>
+
+      <h3>Caveats</h3>
+      <p>Some instruments carry signal noise: IndiGo operates international routes too, so
+      fewer outbound trips by Indians may not straightforwardly hurt it. Sector indices have
+      composition risk (Nifty Tourism is heavily weighted toward airlines). These are flagged
+      in tooltips where relevant.</p>
+    </div>
+  </details>
+
+  <footer class="footer">
+    <div class="sources">
+      <span class="src-pill">YAHOO FINANCE</span>
+      <span class="src-pill">FRED · ST. LOUIS FED</span>
+      <span class="src-pill">IOCL · DAILY RSP</span>
+      <span class="src-pill">MYGOV · SPEECH TEXT</span>
+    </div>
+    <p>
+      This site is observational and non-partisan. It presents publicly available price series
+      related to categories referenced in the seven appeals, without commentary on policy.
+      Closing prices only. Data refreshed daily where source updates daily; monthly series
+      refreshed monthly.
+    </p>
+  </footer>
+
+</div>
+
+<script>
+/* =================================================================
+   DISPLAY CONFIG — appeals, instruments metadata
+   (Price data is fetched from ./data/prices.json — generated daily.)
+   ================================================================= */
+
+const SPEECH_DATE = '2026-05-10';
+
+const APPEALS = [
+  { id: 'all',      label: 'All',                num: '·',  text: '', note: '' },
+  { id: 'wfh',      label: 'Work From Home',     num: '01', text: 'Prioritize Work From Home wherever possible',                              note: 'WFH reduces commute fuel use; IT services are WFH-native, realty (commercial) and auto are exposed to the shift.' },
+  { id: 'gold',     label: 'Gold',               num: '02', text: 'Avoid buying gold for one year',                                           note: 'Gold is among India\'s largest import categories. Tracked in both INR (GOLDBEES) and USD (gold futures).' },
+  { id: 'energy',   label: 'Energy',             num: '03', text: 'Reduce petrol & diesel consumption — use metro/public transport',          note: 'India imports ~85% of its crude. Brent crude is the upstream benchmark; OMCs are the listed face. Equity proxies for the broader energy complex are included here.' },
+  { id: 'oil',      label: 'Cooking Oil',        num: '04', text: 'Cut down the use of cooking oil',                                          note: 'India imports a majority of its edible oil. Adani Wilmar and Patanjali Foods are the largest listed refiners.' },
+  { id: 'fert',     label: 'Fertilizer',         num: '05', text: 'Reduce dependence on chemical fertilizers — move toward natural farming',   note: 'The Fert Top-5 EW Composite tracks an equal-weighted basket of the five largest listed fertilizer companies by market cap (Coromandel, FACT, Chambal, Deepak Fert., Paradeep Phosphates), each rebased to 100 on 8 May 2026.' },
+  { id: 'swadeshi', label: 'Swadeshi',           num: '06', text: 'Use fewer foreign-branded products and adopt Swadeshi',                    note: 'Nifty FMCG aggregates the largest India-listed consumer-brand companies.' },
+  { id: 'travel',   label: 'Foreign Travel',     num: '07', text: 'Avoid foreign travel for one year',                                        note: 'Outbound travel drains forex. Domestic hospitality (Indian Hotels) is the cleanest beneficiary; airlines have mixed exposure.' },
+  { id: 'macro',    label: 'Macro & Benchmarks', num: '·',  text: '', note: '' },
+  { id: 'retail',   label: 'Retail Fuel Prices', num: '·',  text: '', note: '' },
+];
+
+const INSTRUMENT_META = [
+  // 1. WFH — showInAll: Nifty IT only
+  { id: 'cnxit',       name: 'Nifty IT',                  ticker: '^CNXIT',                 appeal: 'wfh',      role: 'primary', color: '#0077B6', showInAll: true },
+  { id: 'cnxrealty',   name: 'Nifty Realty',              ticker: '^CNXREALTY',             appeal: 'wfh',      role: 'alt',     color: '#9C6644' },
+  { id: 'cnxauto',     name: 'Nifty Auto',                ticker: '^CNXAUTO',               appeal: 'wfh',      role: 'alt',     color: '#D62828' },
+
+  // 2. Gold — showInAll: Gold ETF INR
+  { id: 'goldbees',    name: 'Gold ETF (INR)',            ticker: 'GOLDBEES.NS',            appeal: 'gold',     role: 'primary', color: '#FFB300', showInAll: true },
+  { id: 'gc',          name: 'Gold Futures (USD)',        ticker: 'GC=F',                   appeal: 'gold',     role: 'alt',     color: '#A05D00' },
+
+  // 3. Energy — showInAll: Brent Crude
+  { id: 'brent',       name: 'Brent Crude (USD)',         ticker: 'BZ=F',                   appeal: 'energy',   role: 'primary', color: '#0F1419', showInAll: true },
+  { id: 'cnxenergy',   name: 'Nifty Energy',              ticker: '^CNXENERGY',             appeal: 'energy',   role: 'alt',     color: '#FF6F00' },
+  { id: 'ioc',         name: 'Indian Oil (IOC)',          ticker: 'IOC.NS',                 appeal: 'energy',   role: 'alt',     color: '#C71585' },
+  { id: 'bpcl',        name: 'BPCL',                      ticker: 'BPCL.NS',                appeal: 'energy',   role: 'alt',     color: '#6A4C93' },
+
+  // 4. Cooking oil — showInAll: Adani Wilmar
+  { id: 'awl',         name: 'Adani Wilmar',              ticker: 'AWL.NS',                 appeal: 'oil',      role: 'primary', color: '#2D6A4F', showInAll: true },
+  { id: 'patanjali',   name: 'Patanjali Foods',           ticker: 'PATANJALI.NS',           appeal: 'oil',      role: 'alt',     color: '#95D5B2' },
+
+  // 5. Fertilizer — showInAll: composite
+  { id: 'fert_index',  name: 'Fert Top-5 EW Composite',  ticker: 'SYNTHETIC',              appeal: 'fert',     role: 'primary', color: '#00B894', showInAll: true },
+  { id: 'coromandel',  name: 'Coromandel Intl.',          ticker: 'COROMANDEL.NS',          appeal: 'fert',     role: 'alt',     color: '#2A9D8F' },
+  { id: 'fact',        name: 'Fert. & Chem. Travancore',  ticker: 'FACT.NS',                appeal: 'fert',     role: 'alt',     color: '#1B5E20' },
+  { id: 'chambal',     name: 'Chambal Fertilisers',       ticker: 'CHAMBLFERT.NS',          appeal: 'fert',     role: 'alt',     color: '#52B788' },
+  { id: 'deepakfert',  name: 'Deepak Fertilisers',        ticker: 'DEEPAKFERT.NS',          appeal: 'fert',     role: 'alt',     color: '#76C893' },
+  { id: 'paradeep',    name: 'Paradeep Phosphates',       ticker: 'PARADEEP.NS',            appeal: 'fert',     role: 'alt',     color: '#99D98C' },
+
+  // 6. Swadeshi — only one
+  { id: 'cnxfmcg',     name: 'Nifty FMCG',               ticker: '^CNXFMCG',               appeal: 'swadeshi', role: 'primary', color: '#E63946', showInAll: true },
+
+  // 7. Foreign travel — Tourism Index FIRST (primary), then hotels, then IndiGo
+  { id: 'tourism',     name: 'Nifty India Tourism',       ticker: '^CNXTOURISM',            appeal: 'travel',   role: 'primary', color: '#5E35B1', showInAll: true },
+  { id: 'indhotel',    name: 'Indian Hotels',             ticker: 'INDHOTEL.NS',            appeal: 'travel',   role: 'alt',     color: '#1976D2' },
+  { id: 'indigo',      name: 'IndiGo (InterGlobe Av.)',   ticker: 'INDIGO.NS',              appeal: 'travel',   role: 'alt',     color: '#00ACC1' },
+
+  // Macro — showInAll: Nifty 50 + USD/INR
+  { id: 'usdinr',      name: 'USD / INR',                 ticker: 'USDINR=X',               appeal: 'macro',    role: 'primary', color: '#D81B60', showInAll: true, note: 'Shown as USD per INR — higher = stronger rupee' },
+  { id: 'nifty50',     name: 'Nifty 50',                  ticker: '^NSEI',                  appeal: 'macro',    role: 'primary', color: '#283593', showInAll: true },
+  { id: 'niftymid',    name: 'Nifty Midcap 50',           ticker: '^NSEMDCP50',             appeal: 'macro',    role: 'primary', color: '#3949AB' },
+  { id: 'niftysml',    name: 'Nifty Smallcap 100',        ticker: '^CNXSC',                 appeal: 'macro',    role: 'primary', color: '#5C6BC0' },
+  { id: 'nifty500',    name: 'Nifty 500',                 ticker: '^CRSLDX',                appeal: 'macro',    role: 'primary', color: '#7986CB' },
+  { id: 'cpi',         name: 'India CPI (MOSPI)',         ticker: 'MANUAL',                 appeal: 'macro',    role: 'primary', color: '#827717', forwardFill: true },
+
+  // Retail fuel — Mumbai only, 4 series (forward-filled between revisions)
+  { id: 'petrol_mum',  name: 'Petrol · Mumbai (₹/L)',     ticker: 'GOODRETURNS',            appeal: 'retail',   role: 'primary', color: '#E91E63', forwardFill: true, showInAll: true },
+  { id: 'diesel_mum',  name: 'Diesel · Mumbai (₹/L)',     ticker: 'GOODRETURNS',            appeal: 'retail',   role: 'primary', color: '#5D4037', forwardFill: true },
+  { id: 'lpg_dom_mum', name: 'LPG Domestic 14.2kg · Mumbai (₹)', ticker: 'GOODRETURNS',    appeal: 'retail',   role: 'primary', color: '#FF5722', forwardFill: true },
+  { id: 'lpg_com_mum', name: 'LPG Commercial 19kg · Mumbai (₹)', ticker: 'GOODRETURNS',    appeal: 'retail',   role: 'primary', color: '#FF8A65', forwardFill: true },
+];
+
+/* =================================================================
+   STATE
+   ================================================================= */
+let DATA = null;            // loaded from prices.json
+let NEWS = [];              // loaded from news.json
+let chart = null;
+let activeAppeal = 'all';
+let activeRange = 'ALL';
+const hiddenIds = new Set();
+
+/* =================================================================
+   UTILS
+   ================================================================= */
+function showError(msg) {
+  const box = document.getElementById('errBox');
+  if (box) { box.style.display = 'block'; box.textContent = msg; }
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+}
+
+function fmtDateLong(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+}
+
+function rebased(values, baseValue) {
+  return values.map(v => v == null ? null : +(v / baseValue * 100).toFixed(3));
+}
+
+/* =================================================================
+   DATA LOADING
+   ================================================================= */
+async function loadData() {
+  try {
+    const res = await fetch('./data/prices.json?ts=' + Date.now());
+    if (!res.ok) throw new Error('Could not load data/prices.json (HTTP ' + res.status + ')');
+    DATA = await res.json();
+    if (!DATA || !DATA.instruments) throw new Error('Invalid data format in prices.json');
+  } catch (err) {
+    showError('Data not loaded yet: ' + err.message + '. The site will work once the data fetcher has run at least once.');
+    DATA = { metadata: {}, instruments: {} };
+  }
+
+  // News is best-effort — failure here doesn't block the chart
+  try {
+    const res = await fetch('./data/news.json?ts=' + Date.now());
+    if (res.ok) {
+      const j = await res.json();
+      NEWS = Array.isArray(j.items) ? j.items : [];
+    }
+  } catch (err) {
+    console.warn('news.json not loaded:', err);
+    NEWS = [];
+  }
+}
+
+/* =================================================================
+   CHART
+   ================================================================= */
+function getDatesForRange(range, allDates) {
+  if (!allDates || allDates.length === 0) return [];
+  if (range === 'ALL') return allDates;
+  const today = new Date(allDates[allDates.length - 1] + 'T00:00:00');
+  const cutoff = new Date(today);
+  if (range === '1M') cutoff.setMonth(cutoff.getMonth() - 1);
+  else if (range === '3M') cutoff.setMonth(cutoff.getMonth() - 3);
+  else if (range === '6M') cutoff.setMonth(cutoff.getMonth() - 6);
+  return allDates.filter(d => new Date(d + 'T00:00:00') >= cutoff);
+}
+
+function isWeekday(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  const day = d.getDay(); // 0=Sun, 6=Sat
+  return day !== 0 && day !== 6;
+}
+
+function buildDatasets() {
+  if (!DATA || !DATA.instruments) return { labels: [], datasets: [] };
+
+  // For 'all' tab, only show instruments flagged showInAll
+  const metaForAppeal = activeAppeal === 'all'
+    ? INSTRUMENT_META.filter(m => m.showInAll)
+    : INSTRUMENT_META.filter(m => m.appeal === activeAppeal);
+
+  // Build date spine — weekdays only
+  const allDates = new Set();
+  metaForAppeal.forEach(m => {
+    const inst = DATA.instruments[m.id];
+    if (inst && inst.prices) inst.prices.forEach(([d]) => {
+      if (isWeekday(d) || m.forwardFill) allDates.add(d);
+    });
+  });
+  // For forward-fill series on weekends, we still want weekends in the spine
+  // Actually simpler: collect all dates, then strip weekends ONLY for market series
+  // Spine = union of all dates that are weekdays
+  let dates = Array.from(allDates).sort().filter(isWeekday);
+  dates = getDatesForRange(activeRange, dates);
+
+  const datasets = metaForAppeal.map(meta => {
+    const inst = DATA.instruments[meta.id];
+    const series = new Array(dates.length).fill(null);
+    const raw = new Array(dates.length).fill(null);
+    if (inst && inst.prices && inst.prices.length) {
+      const base = inst.base_price;
+      const priceMap = new Map(inst.prices.map(([d, p]) => [d, p]));
+      const sortedKnownDates = [...priceMap.keys()].sort();
+      const firstKnownDate = sortedKnownDates[0];
+
+      let lastKnown = null;
+      for (let i = 0; i < dates.length; i++) {
+        const d = dates[i];
+        if (priceMap.has(d)) {
+          lastKnown = priceMap.get(d);
+        } else if (meta.forwardFill && lastKnown !== null && d > firstKnownDate) {
+          // carry forward last known — no-op needed, lastKnown stays
+        } else {
+          lastKnown = null; // reset so market series don't fill across gaps
+        }
+        if (lastKnown !== null) {
+          series[i] = +(lastKnown / base * 100).toFixed(3);
+          raw[i] = lastKnown;
+        }
+      }
+    }
+    return {
+      label: meta.name,
+      instrumentId: meta.id,
+      rawPrices: raw,
+      data: series,
+      borderColor: meta.color,
+      backgroundColor: meta.color,
+      borderWidth: meta.role === 'primary' ? 2.2 : 1.5,
+      borderDash: meta.role === 'alt' ? [5, 3] : [],
+      pointRadius: 0,
+      pointHoverRadius: 5,
+      pointHoverBorderWidth: 2,
+      pointHoverBorderColor: '#fff',
+      pointHoverBackgroundColor: meta.color,
+      tension: 0.18,
+      spanGaps: true,
+      hidden: hiddenIds.has(meta.id),
+    };
+  });
+
+  return { labels: dates.map(fmtDate), rawDates: dates, datasets };
+}
+
+function initChart() {
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  const { labels, rawDates, datasets } = buildDatasets();
+  chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false, axis: 'x' },
+      layout: { padding: { top: 8, right: 6, bottom: 4, left: 0 } },
+      scales: {
+        x: {
+          type: 'category',
+          grid: { color: 'rgba(15,20,25,0.04)', drawTicks: false },
+          border: { color: 'rgba(15,20,25,0.15)' },
+          ticks: {
+            color: '#6B7280',
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            maxRotation: 0,
+            autoSkip: true,
+            autoSkipPadding: 14,
+          }
+        },
+        y: {
+          position: 'right',
+          grid: { color: 'rgba(15,20,25,0.06)', drawTicks: false },
+          border: { display: false },
+          ticks: {
+            color: '#6B7280',
+            font: { family: "'JetBrains Mono', monospace", size: 10 },
+            callback: v => v.toFixed(1),
+            padding: 6,
+          },
+          title: {
+            display: true,
+            text: 'Index (10 May 2026 = 100)',
+            color: '#6B7280',
+            font: { family: "'DM Sans', sans-serif", size: 11, weight: '500' },
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        zoom: {
+          zoom: {
+            drag: {
+              enabled: true,
+              backgroundColor: 'rgba(199, 93, 44, 0.12)',
+              borderColor: 'rgba(199, 93, 44, 0.5)',
+              borderWidth: 1,
+              threshold: 5,
+            },
+            wheel: { enabled: false },
+            pinch: { enabled: true },
+            mode: 'x',
+            onZoomComplete: () => {
+              document.getElementById('resetZoomBtn').classList.add('visible');
+            }
+          },
+          pan: { enabled: false },
+          limits: {
+            x: { minRange: 2 }
+          }
+        },
+        tooltip: {
+          backgroundColor: '#0F1419',
+          titleColor: '#FBF6EE',
+          bodyColor: '#FBF6EE',
+          borderColor: 'rgba(255,255,255,0.06)',
+          borderWidth: 1,
+          padding: 12,
+          cornerRadius: 8,
+          titleFont: { family: "'JetBrains Mono', monospace", size: 11, weight: '500' },
+          bodyFont: { family: "'DM Sans', sans-serif", size: 12 },
+          boxPadding: 4,
+          filter: item => item.parsed.y != null,
+          callbacks: {
+            title: (items) => {
+              if (!items.length) return '';
+              const idx = items[0].dataIndex;
+              return fmtDateLong(chart._rawDates[idx]);
+            },
+            label: (item) => {
+              const ds = item.dataset;
+              const raw = ds.rawPrices[item.dataIndex];
+              const v = item.parsed.y;
+              if (raw == null || v == null) return '';
+              const change = (v - 100).toFixed(2);
+              const sign = change >= 0 ? '+' : '';
+              const rawStr = raw >= 1000
+                ? raw.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+                : raw.toFixed(2);
+              return `  ${ds.label}  ·  ${rawStr}  ·  ${sign}${change}%`;
+            }
+          }
+        }
+      },
+      elements: { line: { capBezierPoints: true } },
+    }
+  });
+  chart._rawDates = rawDates;
+  document.getElementById('chartLoading').style.display = 'none';
+  document.getElementById('mainChart').style.display = 'block';
+
+  // Double-click on canvas resets zoom
+  const canvas = document.getElementById('mainChart');
+  canvas.addEventListener('dblclick', () => {
+    if (chart.resetZoom) {
+      chart.resetZoom();
+      document.getElementById('resetZoomBtn').classList.remove('visible');
+    }
+  });
+
+  // Reset button
+  document.getElementById('resetZoomBtn').onclick = () => {
+    if (chart && chart.resetZoom) {
+      chart.resetZoom();
+      document.getElementById('resetZoomBtn').classList.remove('visible');
+    }
+  };
+}
+
+function refreshChart() {
+  const { labels, rawDates, datasets } = buildDatasets();
+  chart.data.labels = labels;
+  chart.data.datasets = datasets;
+  chart._rawDates = rawDates;
+  // Reset any existing zoom when filter changes — labels may be different length
+  if (chart.resetZoom) {
+    chart.resetZoom('none');
+    document.getElementById('resetZoomBtn').classList.remove('visible');
+  }
+  chart.update('none');
+  renderLegend();
+  renderChartTitle();
+  renderCallout();
+  renderNews();
+}
+
+/* =================================================================
+   FILTERS & UI
+   ================================================================= */
+function renderChips() {
+  const el = document.getElementById('filterChips');
+  el.innerHTML = '';
+  APPEALS.forEach(a => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (a.id === activeAppeal ? ' active' : '');
+    btn.innerHTML = `${a.num !== '·' ? `<span class="num">${a.num}</span>` : ''}${a.label}`;
+    btn.onclick = () => { activeAppeal = a.id; renderChips(); refreshChart(); };
+    el.appendChild(btn);
+  });
+}
+
+function renderRangeToggle() {
+  document.querySelectorAll('#rangeToggle button').forEach(b => {
+    b.classList.toggle('active', b.dataset.range === activeRange);
+    b.onclick = () => { activeRange = b.dataset.range; renderRangeToggle(); refreshChart(); };
+  });
+}
+
+function renderChartTitle() {
+  const titleEl = document.getElementById('chartTitle');
+  if (activeAppeal === 'all') titleEl.textContent = 'All tracked instruments';
+  else if (activeAppeal === 'macro') titleEl.textContent = 'Macro & benchmarks';
+  else if (activeAppeal === 'retail') titleEl.textContent = 'Retail fuel prices (Delhi · Mumbai · Pune)';
+  else {
+    const a = APPEALS.find(x => x.id === activeAppeal);
+    titleEl.textContent = `Appeal ${a.num} · ${a.label}`;
+  }
+}
+
+function renderCallout() {
+  const el = document.getElementById('appealCallout');
+  const a = APPEALS.find(x => x.id === activeAppeal);
+  if (!a || !a.text) { el.classList.remove('visible'); return; }
+  document.getElementById('appealLabel').textContent = `Appeal ${a.num}`;
+  document.getElementById('appealText').textContent = '\u201C' + a.text + '\u201D';
+  document.getElementById('appealNote').textContent = a.note;
+  el.classList.add('visible');
+}
+
+function renderLegend() {
+  const el = document.getElementById('legend');
+  el.innerHTML = '';
+  chart.data.datasets.forEach((ds, idx) => {
+    // Latest non-null value for change calc
+    let last = null;
+    for (let i = ds.data.length - 1; i >= 0; i--) {
+      if (ds.data[i] != null) { last = ds.data[i]; break; }
+    }
+    const inst = DATA.instruments[ds.instrumentId];
+    const hasData = last != null && inst;
+    const change = hasData ? (last - 100).toFixed(2) : null;
+    const isUp = change != null && change >= 0;
+    const sign = isUp ? '+' : '';
+    const changeStr = hasData ? `${sign}${change}%` : 'no data';
+    const changeClass = !hasData ? '' : (isUp ? 'up' : 'down');
+
+    const item = document.createElement('div');
+    item.className = 'legend-item' + (hiddenIds.has(ds.instrumentId) ? ' hidden' : '');
+    item.innerHTML = `
+      <span class="legend-swatch" style="background:${ds.borderColor}; border-color:${ds.borderColor}; color:${ds.borderColor}"></span>
+      <span class="legend-name" title="${ds.label}">${ds.label}</span>
+      <span class="legend-value ${changeClass}">${changeStr}</span>
+    `;
+    item.onclick = () => {
+      if (hiddenIds.has(ds.instrumentId)) hiddenIds.delete(ds.instrumentId);
+      else hiddenIds.add(ds.instrumentId);
+      chart.setDatasetVisibility(idx, !hiddenIds.has(ds.instrumentId));
+      chart.update('none');
+      renderLegend();
+    };
+    el.appendChild(item);
+  });
+}
+
+/* =================================================================
+   NEWS TIMELINE
+   ================================================================= */
+const APPEAL_LABEL = Object.fromEntries(APPEALS.map(a => [a.id, a.label]));
+
+function fmtTimelineDate(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return {
+    main: d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }).toUpperCase(),
+    year: d.getFullYear(),
+  };
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderNews() {
+  const el = document.getElementById('timeline');
+  const titleEl = document.getElementById('newsTitle');
+
+  // Filter by active appeal
+  const filtered = NEWS.filter(n => {
+    if (!n || !n.date) return false;
+    if (activeAppeal === 'all') return true;
+    return Array.isArray(n.appeals) && n.appeals.includes(activeAppeal);
+  });
+
+  // Sort: newest first
+  filtered.sort((a, b) => b.date.localeCompare(a.date));
+
+  titleEl.textContent = activeAppeal === 'all'
+    ? `News & Events · ${filtered.length}`
+    : `News & Events · ${APPEAL_LABEL[activeAppeal]} · ${filtered.length}`;
+
+  if (filtered.length === 0) {
+    el.innerHTML = `<div class="news-empty">No items recorded for this filter yet. Add entries to <code>data/news.json</code> as relevant news appears.</div>`;
+    return;
+  }
+
+  el.innerHTML = filtered.map(n => {
+    const dt = fmtTimelineDate(n.date);
+    const headline = n.url
+      ? `<a href="${escapeHtml(n.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(n.headline)}</a>`
+      : escapeHtml(n.headline);
+    const summary = n.summary ? `<div class="tl-summary">${escapeHtml(n.summary)}</div>` : '';
+    const source = n.source ? `<span class="tl-source">${escapeHtml(n.source)}</span>` : '';
+    const tags = (n.appeals || [])
+      .filter(a => APPEAL_LABEL[a])
+      .map(a => `<span class="tl-tag">${escapeHtml(APPEAL_LABEL[a].toLowerCase())}</span>`)
+      .join('');
+    return `
+      <div class="timeline-item">
+        <div class="tl-date">${dt.main}<br><span class="tl-year">${dt.year}</span></div>
+        <div class="tl-content">
+          <div class="tl-headline">${headline}</div>
+          ${summary}
+          <div class="tl-meta">${source}${tags}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* =================================================================
+   HEADER META
+   ================================================================= */
+function setMeta() {
+  const today = new Date();
+  const speech = new Date(SPEECH_DATE + 'T00:00:00');
+  const days = Math.max(0, Math.floor((today - speech) / 86400000));
+  document.getElementById('daysElapsed').textContent = days + ' of 365';
+  document.getElementById('instrumentCount').textContent = INSTRUMENT_META.length;
+
+  let lu = '—';
+  if (DATA && DATA.metadata && DATA.metadata.last_updated) {
+    const d = new Date(DATA.metadata.last_updated);
+    lu = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+  document.getElementById('lastUpdated').textContent = lu;
+}
+
+/* =================================================================
+   EXPORT
+   ================================================================= */
+document.getElementById('exportBtn').onclick = () => {
+  if (!chart) return;
+  const canvas = document.getElementById('mainChart');
+  const tmp = document.createElement('canvas');
+  tmp.width = canvas.width;
+  tmp.height = canvas.height;
+  const c = tmp.getContext('2d');
+  c.fillStyle = '#FFFFFF';
+  c.fillRect(0, 0, tmp.width, tmp.height);
+  c.drawImage(canvas, 0, 0);
+
+  const url = tmp.toDataURL('image/png', 1);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0, 10);
+  a.href = url;
+  a.download = `sapta-sankalp-${activeAppeal}-${stamp}.png`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+/* =================================================================
+   BOOT
+   ================================================================= */
+window.addEventListener('error', (e) => {
+  showError('Script error: ' + (e.message || 'unknown'));
+});
+
+(async function boot() {
+  try {
+    await loadData();
+    if (typeof Chart === 'undefined') {
+      throw new Error('Chart.js failed to load from CDN.');
+    }
+    initChart();
+    renderChips();
+    renderRangeToggle();
+    renderLegend();
+    renderChartTitle();
+    renderNews();
+    setMeta();
+  } catch (err) {
+    showError(err.message);
+    console.error(err);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "_comment": "India CPI (All India General Index). MOSPI releases on/around 12th of each month for the prior month's data. Add a new [YYYY-MM-DD, index_value] row to 'prices' when each release is out.",
+  "_source": "https://mospi.gov.in (Press releases — Consumer Price Index)",
+  "_unit_notes": "All India General Index, Base 2012=100, combined urban+rural. Use the 'General Index' value, not inflation %.",
+  "_base_date": "2026-05-08 — using April-2026 print as the closest available reference (CPI is released with a lag)",
+
+  "cpi": {
+    "base_price": 188.5,
+    "prices": [
+      ["2026-05-08", 188.5]
+    ]
+  }
+}

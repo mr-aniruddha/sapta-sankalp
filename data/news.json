@@ -1,0 +1,85 @@
+{
+  "_comment": "Curated news items related to tracked instruments. Add new entries by appending to the 'items' array. Newest items can go at the top or bottom \u2014 the site sorts by date.",
+  "_schema": {
+    "date": "YYYY-MM-DD",
+    "headline": "Short, factual headline",
+    "source": "Publisher name (e.g. Business Standard, PIB, Reuters)",
+    "url": "Direct link to the source article",
+    "appeals": "Array of appeal IDs the item relates to. Valid: wfh, gold, fuel, oil, fert, swadeshi, travel, macro, retail",
+    "summary": "Optional 1-2 sentence factual summary"
+  },
+  "items": [
+    {
+      "date": "2026-05-13",
+      "headline": "Petrol hiked \u20b93.14/L and diesel \u20b93.11/L in Mumbai; biggest single-day revision since 2022",
+      "source": "Goodreturns / IOCL",
+      "url": "https://www.goodreturns.in/petrol-price-in-mumbai.html",
+      "appeals": [
+        "energy",
+        "retail",
+        "macro"
+      ],
+      "summary": "OMCs raised petrol to \u20b9106.68/L and diesel to \u20b993.14/L in Mumbai to partially offset mounting under-recoveries driven by Brent crude above $100 and a weak rupee."
+    },
+    {
+      "date": "2026-05-01",
+      "headline": "Commercial LPG 19kg cylinder hiked \u20b9993 to \u20b93,024 in Mumbai",
+      "source": "IOCL / Goodreturns",
+      "url": "https://www.goodreturns.in/lpg-price-in-mumbai.html",
+      "appeals": [
+        "retail",
+        "macro"
+      ],
+      "summary": "Third commercial LPG hike since February; driven by a 44% jump in Saudi Contract Price and Hormuz supply disruptions. Domestic 14.2kg cylinder price unchanged at \u20b9912.50."
+    },
+    {
+      "date": "2026-05-10",
+      "headline": "PM Modi makes seven appeals to citizens under 'Nation First, Duty Above Comfort'",
+      "source": "MyGov / PIB",
+      "url": "https://www.newsonair.gov.in/pm-modi-urges-citizens-not-to-buy-gold-for-a-year-reduce-fuel-consumption-and-conserve-foreign-exchange-amid-west-asia-crisis/",
+      "appeals": [
+        "wfh",
+        "gold",
+        "fuel",
+        "oil",
+        "fert",
+        "swadeshi",
+        "travel",
+        "macro"
+      ],
+      "summary": "Speech in Hyderabad framing seven citizen-led measures to conserve foreign exchange amid West Asia crisis and elevated crude prices."
+    },
+    {
+      "date": "2026-05-15",
+      "headline": "Government raises petrol and diesel prices by \u20b93/litre",
+      "source": "Business Standard",
+      "url": "https://www.business-standard.com/markets/news/further-fuel-price-hikes-may-intensify-fpi-selling-iin-indian-markets-126051500659_1.html",
+      "appeals": [
+        "fuel",
+        "retail",
+        "macro"
+      ],
+      "summary": "OMCs implement a \u20b93/litre hike to partially offset under-recoveries. Analysts flag inflation and FPI-flow risks from further hikes."
+    },
+    {
+      "date": "2026-05-14",
+      "headline": "FPI outflows from Indian equities cross \u20b92.2 trillion YTD",
+      "source": "NSDL / Business Standard",
+      "url": "https://www.business-standard.com/markets/news/fuel-price-hike-impact-rupee-depreciation-to-trigger-more-fpi-outflows-126051500339_1.html",
+      "appeals": [
+        "macro"
+      ],
+      "summary": "Foreign portfolio outflows for 2026 surpass entire CY2025 outflow of \u20b91.66 trillion, contributing to rupee weakness."
+    },
+    {
+      "date": "2026-05-12",
+      "headline": "April CPI prints at 3.48%, within RBI tolerance band",
+      "source": "MOSPI",
+      "url": "https://www.business-standard.com/markets/news/fuel-price-hike-impact-rupee-depreciation-to-trigger-more-fpi-outflows-126051500339_1.html",
+      "appeals": [
+        "macro"
+      ],
+      "summary": "Headline inflation contained but inflationary expectations rising amid fuel and commodity pressures."
+    }
+  ]
+}
