@@ -3,7 +3,7 @@
     "speech_date": "2026-05-10",
     "rebase_date": "2026-05-08",
     "rebase_note": "Last available pre-speech close (10 May was Sunday, market closed).",
-    "last_updated": "2026-05-30T18:14:33.671757+05:30",
+    "last_updated": "2026-05-31T18:24:42.821788+05:30",
     "generated_by": "scripts/fetch.py",
     "instrument_count": 30
   },
@@ -333,7 +333,7 @@
         ],
         [
           "2026-05-29",
-          4560.5
+          4593.0
         ]
       ]
     },
@@ -398,7 +398,7 @@
         ],
         [
           "2026-05-29",
-          92.05
+          91.12
         ]
       ]
     },
